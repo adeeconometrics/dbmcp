@@ -1,13 +1,9 @@
 {
 	"servers": {
-		"dbserver-server-dd0f38b8": {
-			"command": "uv",
-			"args": [
-				"run",
-				"mcp"
-			],
-			"type": "stdio"
-		},
+		"httpdbmcp-server": {
+			"url": "http://localhost:8000/mcp",
+			"type": "http"
+		}
 	},
 	"inputs": []
 }

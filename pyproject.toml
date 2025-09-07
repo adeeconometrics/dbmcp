@@ -1,20 +1,10 @@
 [project]
-name = "dbmcp"
+name = "sqlmodel-mcp"
 version = "0.1.0"
-description = "Demo MCP + FastAPI server for database tools"
-requires-python = ">=3.10"
-
 dependencies = [
-    "mcp-server[cli]", # includes typer
-    "sqlmodel",
-    "faker",
     "fastapi",
     "uvicorn",
+    "sqlmodel",
+    "fastapi-mcp",
+    "mcp[cli]"  # ✅ install Typer CLI for MCP
 ]
-
-[project.scripts]
-# stdio MCP server
-mcp = "sqlmodelmcp.mcpserver:main"
-
-# optional: FastAPI HTTP server
-api = "sqlmodelmcp.mcpserver:app"
