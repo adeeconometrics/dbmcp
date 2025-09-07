@@ -1,0 +1,13 @@
+{
+	"servers": {
+		"dbserver-server-dd0f38b8": {
+			"command": "uv",
+			"args": [
+				"run",
+				"mcp"
+			],
+			"type": "stdio"
+		},
+	},
+	"inputs": []
+}
