@@ -11,6 +11,18 @@ class BaseModel(SQLModel):
     updated_at: Optional[datetime] = Field(default=None, nullable=True)
 
 
+class Category(BaseModel, table=True):
+    """SQLModel schema for product categories."""
+    __tablename__ = "categories"
+
+    category_id: str = Field(
+        default_factory=lambda: str(uuid4()), primary_key=True)
+    name: str
+    description: Optional[str] = None
+
+    products: List["Product"] = Relationship(back_populates="category")
+
+
 class Product(BaseModel, table=True):
     """SQLModel schema for products."""
     __tablename__ = "products"
@@ -20,8 +32,26 @@ class Product(BaseModel, table=True):
     name: str
     price: float
     stock_quantity: int = Field(default=0)
+    category_id: str = Field(foreign_key="categories.category_id")
+    category: Optional["Category"] = Relationship(back_populates="products")
 
     order_items: List["OrderItem"] = Relationship(back_populates="product")
+
+
+class Address(BaseModel, table=True):
+    """SQLModel schema for addresses."""
+    __tablename__ = "addresses"
+
+    address_id: str = Field(
+        default_factory=lambda: str(uuid4()), primary_key=True)
+
+    street: str
+    city: str
+    state: Optional[str] = None
+    zip_code: str
+    country: str
+
+    users: List["User"] = Relationship(back_populates="address")
 
 
 class User(BaseModel, table=True):
@@ -30,10 +60,17 @@ class User(BaseModel, table=True):
 
     user_id: str = Field(
         default_factory=lambda: str(uuid4()), primary_key=True)
+    address_id: Optional[str] = Field(
+        default=None, foreign_key="addresses.address_id")
+
     firstname: str
     lastname: str
+    password: str
+    phone: Optional[str] = None
+    payment_info: Optional[str] = None
     email: str = Field(index=True, unique=True)
 
+    address: Optional[Address] = Relationship(back_populates="users")
     orders: List["Order"] = Relationship(back_populates="user")
 
 

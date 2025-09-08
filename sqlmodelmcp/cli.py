@@ -1,9 +1,15 @@
+from sqlmodel import select
 import typer
+
+
 from db import init_db, get_session
-from generators import (generate_users,
+from generators import (generate_addresses,
+                        generate_categories,
+                        generate_users,
                         generate_products,
                         generate_orders,
                         generate_order_items)
+from dataenums import Categiories
 
 app = typer.Typer(help="MCP Demo Data Seeder CLI")
 
@@ -14,23 +20,40 @@ def seed(
     products: int = typer.Option(10, help="Number of products to generate"),
     orders: int = typer.Option(8, help="Number of orders to generate"),
     items: int = typer.Option(20, help="Number of order items to generate"),
+    addresses: int = typer.Option(10, help="Number of addresses to generate"),
 ) -> None:
     """
     Generate fake data and insert into the database.
     """
     init_db()
     with next(get_session()) as session:
-        # Generate users and products
-        user_objs = generate_users(users)
-        product_objs = generate_products(products)
+        # 1. Generate and insert categories
+        category_objs = generate_categories()
+        session.add_all(category_objs)
+        session.commit()
 
+        # 2. Cache category name to id mapping
+        categories_in_db = session.exec(select(type(category_objs[0]))).all()
+        category_id_map = {c.name: c.category_id for c in categories_in_db}
+
+        # 3. Generate addresses, users, products
+        address_objs = generate_addresses(addresses)
+        session.add_all(address_objs)
+        session.commit()
+        address_ids = [a.address_id for a in session.exec(
+            select(type(address_objs[0]))).all()]
+
+        user_objs = generate_users(users, address_ids)
+        product_objs = generate_products(products, category_id_map)
         session.add_all(user_objs + product_objs)
         session.commit()
 
         # Refresh to get IDs
-        user_ids = [u.user_id for u in session.exec(type(user_objs[0])).all()]
+
+        user_ids = [u.user_id for u in session.exec(
+            select(type(user_objs[0]))).all()]
         product_ids = [p.product_id for p in session.exec(
-            type(product_objs[0])).all()]
+            select(type(product_objs[0]))).all()]
 
         # Generate orders
         order_objs = generate_orders(orders, user_ids)
