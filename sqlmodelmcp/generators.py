@@ -9,11 +9,14 @@ fake = Faker()
 
 def generate_users(n: int) -> List[User]:
     """Generate a list of User instances."""
+
     return [
         User(
-            name=fake.name(),
-            email=fake.unique.email()
-        ) for _ in range(n)
+            firstname=firstname,
+            lastname=lastname,
+            email=f"{firstname.lower()}{lastname.lower()}@example.com"
+        )
+        for firstname, lastname in ((fake.first_name(), fake.last_name()) for _ in range(n))
     ]
 
 

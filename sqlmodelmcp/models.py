@@ -1,13 +1,13 @@
 from typing import List, Optional
 from datetime import datetime
 from enum import Enum as StrEnum
+from uuid import uuid4
 from sqlmodel import SQLModel, Field, Relationship
 
 
 class BaseModel(SQLModel):
     """Base model for all database models."""
-    created_at: datetime = Field(
-        default_factory=datetime.now, nullable=False)
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
     updated_at: Optional[datetime] = Field(default=None, nullable=True)
 
 
@@ -15,7 +15,8 @@ class Product(BaseModel, table=True):
     """SQLModel schema for products."""
     __tablename__ = "products"
 
-    product_id: Optional[int] = Field(default=None, primary_key=True)
+    product_id: str = Field(
+        default_factory=lambda: str(uuid4()), primary_key=True)
     name: str
     price: float
     stock_quantity: int = Field(default=0)
@@ -27,8 +28,10 @@ class User(BaseModel, table=True):
     """SQLModel schema for users."""
     __tablename__ = "users"
 
-    user_id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
+    user_id: str = Field(
+        default_factory=lambda: str(uuid4()), primary_key=True)
+    firstname: str
+    lastname: str
     email: str = Field(index=True, unique=True)
 
     orders: List["Order"] = Relationship(back_populates="user")
@@ -46,8 +49,9 @@ class Order(BaseModel, table=True):
     """SQLModel schema for orders."""
     __tablename__ = "orders"
 
-    order_id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="users.user_id")
+    order_id: str = Field(
+        default_factory=lambda: str(uuid4()), primary_key=True)
+    user_id: str = Field(foreign_key="users.user_id")
     order_date: datetime = Field(default_factory=datetime.now)
     status: str = Field(default=str(OrderStatus.PENDING))
 
@@ -59,8 +63,8 @@ class OrderItem(BaseModel, table=True):
     """SQLModel schema for order items."""
     __tablename__ = "order_items"
 
-    order_id: int = Field(foreign_key="orders.order_id", primary_key=True)
-    product_id: int = Field(
+    order_id: str = Field(foreign_key="orders.order_id", primary_key=True)
+    product_id: str = Field(
         foreign_key="products.product_id", primary_key=True)
     quantity: int = Field(default=1)
 
