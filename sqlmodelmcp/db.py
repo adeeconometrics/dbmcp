@@ -1,13 +1,13 @@
+from typing import Generator, Final
 from sqlmodel import SQLModel, create_engine, Session
-from typing import Generator
 
-DATABASE_URL = "sqlite:///../demo.sqlite"  # swap with Postgres/MySQL if needed
+# swap with Postgres/MySQL if needed
+DATABASE_URL: Final[str] = "sqlite:///../demo.sqlite"
 engine = create_engine(DATABASE_URL, echo=True)
 
 
 def init_db() -> None:
     """Create all tables in the database."""
-    from models import user, product, order, order_item  # ensure models are imported
     SQLModel.metadata.create_all(engine)
 
 

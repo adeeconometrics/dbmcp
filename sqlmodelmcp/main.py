@@ -5,7 +5,8 @@ from models.order import Order
 from models.order_item import OrderItem
 
 
-def seed_data():
+def seed_data() -> None:
+    """Seed the database with initial data for testing."""
     init_db()
     with next(get_session()) as session:
         # Create a user
