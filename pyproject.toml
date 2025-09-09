@@ -6,5 +6,6 @@ dependencies = [
     "uvicorn",
     "sqlmodel",
     "fastapi-mcp",
+    "faker",
     "mcp[cli]"  # ✅ install Typer CLI for MCP
 ]

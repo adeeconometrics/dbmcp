@@ -66,7 +66,6 @@ class User(BaseModel, table=True):
     firstname: str
     lastname: str
     password: str
-    phone: Optional[str] = None
     payment_info: Optional[str] = None
     email: str = Field(index=True, unique=True)
 

@@ -1,9 +1,9 @@
 /venv/
 .venv/
+.github/
 .mypy_cache/
 __pycache__/
 *.pyc
-
+**.lock
 **.sqlite
-**>sql
-
+**.sql

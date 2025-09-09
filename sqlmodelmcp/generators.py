@@ -33,8 +33,7 @@ def generate_users(n: int, address_ids: List[str]) -> List[User]:
                 lastname=lastname,
                 email=f"{firstname.lower()}{lastname.lower()}@example.com",
                 password=fake.password(),
-                # phone=fake.phone_number(),
-                payment_info=fake.credit_card_full(),
+                payment_info=fake.credit_card_number(),
                 address_id=choice(address_ids)
             )
         )
@@ -88,7 +87,7 @@ def generate_orders(n: int, user_ids: List[int]) -> List[Order]:
         Order(
             user_id=fake.random_element(elements=user_ids),
             order_date=fake.date_time_this_year(),
-            status=str(fake.random_element(elements=list(OrderStatus)))
+            status=(fake.random_element(elements=list(OrderStatus))).value
         ) for _ in range(n)
     ]
 
